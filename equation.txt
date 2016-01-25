@@ -1,0 +1,52 @@
+C:
+equation:
+C(x) = symsum( B , k , 1 , N ) + symsum( F , p , 1 , N-1 ) 
+
+replace list b2t:
+A	with	PHR(1,k) .* x(i,k) .* CR(i,k)
+B	with	symsum( A , 1 , M )
+C	with	CHR(p,q) .* x(i,p) .* x(j,q) .* CR(i,j) / CBW(p,q)
+D	with	symsum( C , j , i+1 , M )
+E	with	symsum( D , i , 1 , M-1 )
+F	with	symsum( E , q , p+1 , N )
+
+
+C = symsum( symsum( PHR(1,k) .* x(i,k) .* CR(i,k) , 1 , M ) , k , 1 , N ) + symsum( symsum( symsum( symsum( CHR(p,q) .* x(i,p) .* x(j,q) .* CR(i,j) / CBW(p,q) , j , i+1 , M ) , i , 1 , M-1 ) , q , p+1 , N ) , p , 1 , N-1 )
+
+
+
+
+Pm:
+equation:
+Pm(x) = symsum( B , k , 1 , N )
+replace list b2t:
+A	with	mem(1,i) .* x(i,k) - Mem(1,k)
+B	with	max( 0, sumsum( A , i , 1 , M )
+
+Pm = symsum( max( 0, sumsum( mem(1,i) .* x(i,k) - Mem(1,k) , i , 1 , M ) , k , 1 , N ) )
+
+
+
+
+Pl:
+equation:
+Pl(x) = symsum( B , k , 1 , N )
+replace list b2t:
+A	with	l(1,i) .* x(i,k) - L(1,k)
+B	with	max( 0, sumsum( A , i , 1 , M )
+
+Pl = symsum( max( 0, sumsum( l(1,i) .* x(i,k) - L(1,k) , i , 1 , M ) , k , 1 , N ) )
+
+
+
+
+Pc:
+equation:
+Pc(x) = symsum( D , p , 1 , N )
+replace list b2t:
+A	with	symsum( x(i,p) .* x(j,q) .* CR(i,j) , j , 1 , M )
+B	with	symsum( A , i , 1 , M )
+C	with	max( 0, B - PL(p,q) )
+D	with	symsum( C , q , p+1 , N )
+
+Pc = symsum( symsum( max( 0, symsum( symsum( x(i,p) .* x(j,q) .* CR(i,j) , j , 1 , M ) , i , 1 , M ) - PL(p,q) ) , q , p+1 , N ) , p , 1 , N )
